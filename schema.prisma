@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pool {
+  id          String   @id
+  name        String
+  tokenA      String
+  tokenB      String
+  tvl         Decimal?
+  volume24h   Decimal?
+  fees24h     Decimal?
+  apr         Decimal?
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@index([updatedAt])
+}
+
+model PriceHistory {
+  id        Int      @id @default(autoincrement())
+  tokenMint String
+  price     Decimal
+  timestamp DateTime @default(now())
+
+  @@index([tokenMint])
+  @@index([timestamp])
+}
+
+model TokenHolder {
+  walletAddress String
+  balance       Decimal
+  percentage    Decimal?
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  @@id([walletAddress])
+  @@index([balance])
+}
+
+model Transaction {
+  signature   String   @id
+  type        String
+  amount      Decimal?
+  fromWallet  String?
+  toWallet    String?
+  timestamp   DateTime @default(now())
+
+  @@index([timestamp])
+  @@index([type])
+} 
